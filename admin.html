@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title data-i18n="adminPageTitle">Kharkiv RP — Адмін</title>
+    <link href="/style.css" rel="stylesheet">
+    <script src="/style.js"></script>
+    <script src="/i18n.js"></script>
+    <style>
+      .admin-card{max-width:640px;background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+      label{display:block;margin-top:10px;color:var(--steel)}
+      input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#0f0f0f;color:var(--muted)}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">Kharkiv RP</div>
+        <nav class="nav"><a href="/" data-i18n="home">Головна</a><a href="/ranks.html" data-i18n="ranks">Звання</a><a href="/licenses.html" data-i18n="licenses">Ліцензії</a><a href="/admin.html" data-i18n="admin">Адмін</a></nav>
+        <div class="cta"><button class="btn" type="button" data-lang-toggle>UA / RU</button></div>
+      </div>
+    </header>
+    <main>
+      <section class="container" style="padding:40px 24px">
+        <h2 data-i18n="adminTitle">Панель адміністратора</h2>
+        <!-- Modal-style password prompt -->
+        <div id="authModal" class="admin-card" style="max-width:480px;margin:18px auto;position:relative">
+          <p class="subtitle" data-i18n="passwordHint">Введіть пароль для доступу до панелі.</p>
+          <input id="pw" data-i18n-placeholder="password" placeholder="Пароль" type="password" />
+          <div style="margin-top:12px;display:flex;gap:8px"><button id="unlock" class="btn" data-i18n="unlock">Розблокувати</button><button id="clearPw" class="btn" data-i18n="clear">Очистити</button></div>
+          <div id="authMsg" style="margin-top:8px;color:var(--steel)"></div>
+        </div>
+
+        <div id="panel" style="display:none;margin-top:18px">
+          <div class="admin-card" style="margin-bottom:18px">
+            <h3>Редагувати існуючий запис</h3>
+            <select id="recordSelect">
+              <option value="">-- Виберіть запис --</option>
+            </select>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button id="loadRecord" class="btn" type="button">Завантажити</button>
+              <button id="refreshRecords" class="btn" type="button">Оновити список</button>
+            </div>
+          </div>
+          <div class="admin-card">
+            <h3 data-i18n="managePlayer">Додати / Редагувати гравця</h3>
+            <label data-i18n="nickname">Нікнейм</label>
+            <input id="nickname" data-i18n-placeholder="nickname" placeholder="Нікнейм">
+            <label data-i18n="rank">Звання</label>
+            <input id="rank" data-i18n-placeholder="rank" placeholder="Звання">
+            <label data-i18n="faction">Фракція</label>
+            <select id="faction" required>
+              <option value="" data-i18n="chooseFaction">-- Виберіть фракцію --</option>
+              <option value="ДБР" data-i18n="dbr">ДБР</option>
+              <option value="СБС" data-i18n="sbs">СБС</option>
+              <option value="Суд" data-i18n="court">Суд</option>
+              <option value="Прокуратура" data-i18n="prosecution">Прокуратура</option>
+              <option value="Ліцензія на зброю" data-i18n="weaponLicense">Ліцензія на зброю</option>
+            </select>
+            <div id="licenseDateField" style="display:none">
+              <label for="expiresOn" data-i18n="licenseExpiry">Термін дії ліцензії</label>
+              <input id="expiresOn" type="date">
+            </div>
+            <label><input type="checkbox" id="verified"> <span data-i18n="verified">Підтверджено</span></label>
+            <div style="margin-top:12px"><button id="save" class="btn primary" data-i18n="save">Зберегти</button></div>
+            <div id="saveMsg" style="margin-top:10px;color:var(--steel)"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="container footer-inner">© Kharkiv RP</div></footer>
+    <script>
+    const ADMIN_PW = 'kharkiv2026';
+    const API_BASE = window.location.origin + '/api';
+    let records = [];
+    let editingIdentifier = '';
+    document.getElementById('unlock').addEventListener('click', ()=>{
+      const v = document.getElementById('pw').value || '';
+      if(v === ADMIN_PW){ document.getElementById('authModal').style.display='none'; document.getElementById('panel').style.display='block'; loadRecords().catch(()=>{}); }
+      else { document.getElementById('authMsg').textContent=window.i18n.t('wrongPassword'); }
+    });
+    document.getElementById('faction').addEventListener('change', (event)=>{
+      document.getElementById('licenseDateField').style.display = event.target.value === 'Ліцензія на зброю' ? 'block' : 'none';
+    });
+
+    async function loadRecords(){
+      const response = await fetch(`${API_BASE}/ranks`);
+      if(!response.ok) throw new Error('Network');
+      records = await response.json();
+      const select = document.getElementById('recordSelect');
+      select.innerHTML = '<option value="">-- Виберіть запис --</option>';
+      records.forEach(record=>{
+        const option = document.createElement('option');
+        option.value = record.nickname;
+        option.textContent = `${record.nickname} — ${record.faction}`;
+        select.appendChild(option);
+      });
+    }
+
+    function fillRecord(record){
+      editingIdentifier = record.nickname;
+      document.getElementById('nickname').value = record.nickname || '';
+      document.getElementById('rank').value = record.rank || '';
+      document.getElementById('faction').value = record.faction || '';
+      document.getElementById('expiresOn').value = record.expires_on || '';
+      document.getElementById('licenseDateField').style.display = record.faction === 'Ліцензія на зброю' ? 'block' : 'none';
+      document.getElementById('verified').checked = Boolean(record.verified);
+    }
+
+    document.getElementById('loadRecord').addEventListener('click', ()=>{
+      const selected = records.find(record=>record.nickname === document.getElementById('recordSelect').value);
+      if(selected) fillRecord(selected);
+    });
+    document.getElementById('refreshRecords').addEventListener('click', ()=>loadRecords().catch(()=>{}));
+
+    // allow Enter key to submit password
+    document.getElementById('pw').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') document.getElementById('unlock').click(); });
+
+    // Save handler: attach once and perform POST
+    document.getElementById('save').addEventListener('click', async ()=>{
+      const nickname = document.getElementById('nickname').value.trim();
+      const rank = document.getElementById('rank').value.trim();
+      const faction = document.getElementById('faction').value;
+      const expires_on = document.getElementById('expiresOn').value;
+      const verified = document.getElementById('verified').checked;
+      const msg = document.getElementById('saveMsg'); msg.textContent=window.i18n.t('saving');
+      if(!nickname){ msg.textContent=window.i18n.t('requiredNickname'); return; }
+      if(!faction){ msg.textContent=window.i18n.t('invalidFaction'); return; }
+      const isWeaponLicense = faction === 'Ліцензія на зброю';
+      if(isWeaponLicense && !expires_on){ msg.textContent=window.i18n.t('dateRequired'); return; }
+      try{
+        const payload = { nickname, rank, faction, verified, expires_on };
+        const isEditing = Boolean(editingIdentifier);
+        if(isEditing) payload.identifier = editingIdentifier;
+        const res = await fetch(`${API_BASE}/ranks`, { method:isEditing ? 'PUT' : 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const j = await res.json().catch(()=>({}));
+        if(res.ok){
+          msg.textContent=window.i18n.t('saved');
+          // clear inputs and keep form unlocked
+          document.getElementById('nickname').value=''; document.getElementById('rank').value=''; document.getElementById('faction').value=''; document.getElementById('expiresOn').value=''; document.getElementById('licenseDateField').style.display='none'; document.getElementById('verified').checked=false;
+          editingIdentifier = '';
+          await loadRecords().catch(()=>{});
+        } else {
+          const errors = {
+            'invalid faction': window.i18n.t('invalidFaction'),
+            'record not found': window.i18n.t('recordNotFound'),
+            'license expiration date required': window.i18n.t('dateRequired'),
+            'license expiration date has passed': window.i18n.t('datePassed')
+          };
+          msg.textContent = errors[j.error] || j.error || window.i18n.t('error');
+        }
+      }catch(e){ msg.textContent=window.i18n.t('connectionError'); }
+    });
+
+    // Make clear button also reset the whole form (if panel is visible)
+    document.getElementById('clearPw').addEventListener('click', ()=>{
+      // if auth modal is visible, clear password field too
+      const pwEl = document.getElementById('pw'); if(pwEl) pwEl.value = '';
+      const msgEl = document.getElementById('authMsg'); if(msgEl) msgEl.textContent = '';
+      const nickEl = document.getElementById('nickname'); if(nickEl) nickEl.value = '';
+      const rankEl = document.getElementById('rank'); if(rankEl) rankEl.value = '';
+      const facEl = document.getElementById('faction'); if(facEl) facEl.value = '';
+      const expiryEl = document.getElementById('expiresOn'); if(expiryEl) expiryEl.value = '';
+      const dateField = document.getElementById('licenseDateField'); if(dateField) dateField.style.display = 'none';
+      const verEl = document.getElementById('verified'); if(verEl) verEl.checked = false;
+      const saveMsg = document.getElementById('saveMsg'); if(saveMsg) saveMsg.textContent = '';
+      editingIdentifier = '';
+      const recordSelect = document.getElementById('recordSelect'); if(recordSelect) recordSelect.value = '';
+    });
+    </script>
+  </body>
+</html>

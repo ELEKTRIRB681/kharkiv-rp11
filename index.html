@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='100%25' height='100%25' fill='transparent'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='48'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <title data-i18n="homeTitle">Kharkiv RP — Офіційний сервер</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="./style.js"></script>
+    <script src="./i18n.js"></script>
+    <style>
+      .status-online{color:#7fe57f;border-left:3px solid rgba(127,229,127,0.12);background:linear-gradient(90deg, rgba(127,229,127,0.02), transparent)}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">Kharkiv RP</div>
+        <nav class="nav">
+          <a href="/" data-i18n="home">Головна</a>
+          <a href="#rules" data-i18n="rules">Правила</a>
+          <a href="#constitution" data-i18n="constitution">Конституція</a>
+          <a href="/ranks.html" data-i18n="ranks">Звання</a>
+          <a href="/licenses.html" data-i18n="licenses">Ліцензії</a>
+          <a href="/admin.html" data-i18n="admin">Адмін</a>
+        </nav>
+        <div class="cta">
+          <button class="btn" type="button" data-lang-toggle>UA / RU</button>
+          <a id="joinBtn" class="btn primary" data-i18n="join" href="https://roblox.com/share?code=5ihdm3h6w8n7dq&v=v2" target="_blank" rel="noopener noreferrer">Почати гру</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-info">
+            <h1 data-i18n="welcome">Ласкаво просимо на офіційний сервер Kharkiv RP</h1>
+            <div class="hero-actions">
+              <a id="heroJoin" class="btn primary" data-i18n="join" href="https://roblox.com/share?code=5ihdm3h6w8n7dq&v=v2" target="_blank" rel="noopener noreferrer">Почати гру</a>
+              <div id="status" class="status-card" data-i18n="online">Статус: Онлайн (Kharkiv RP активний)</div>
+            </div>
+          </div>
+          <div class="hero-art">
+            <div class="banner-glass">Kharkiv RP</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rules" class="rules container">
+        <h2 data-i18n="serverRules">Правила сервера</h2>
+        <div class="rules-controls">
+          <input id="rulesSearch" data-i18n-placeholder="searchRules" placeholder="Шукати правила (наприклад: булінг, штраф)" />
+        </div>
+        <div id="rulesList" class="accordion"></div>
+      </section>
+
+      <section id="constitution" class="constitution container">
+        <h2 data-i18n="constitutionServer">Конституція сервера</h2>
+        <div id="constitutionAccordion" class="accordion constitution" aria-label="Конституція — статті">
+          <!-- Pre-rendered accordion (all sections & articles) -->
+          <div class="constitution-section-title">Розділ I. Загальні положення</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 1</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Сервер є ігровою спільнотою, у якій усі учасники зобов'язані дотримуватися Конституції та правил сервера.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 2</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Конституція має найвищу силу серед внутрішніх нормативних документів сервера.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 3</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Усі правила, накази, постанови та положення фракцій повинні відповідати Конституції.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 4</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Незнання Конституції або правил сервера не звільняє від відповідальності.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ II. Права гравців</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 5</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Кожен гравець має право на: поважне ставлення; безпечну участь у грі; свободу висловлення думки в межах правил; участь у дозволених фракціях; подання скарг та заяв; захист своєї честі, майна та прав; придбання або оренду дозволеного майна; отримання ліцензій за встановленою процедурою.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 6</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Забороняється дискримінація, цькування, погрози, образи та навмисне переслідування інших гравців.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ III. Обов'язки гравців</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 7</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Кожен гравець зобов'язаний: дотримуватися Конституції та правил сервера; поважати інших учасників; виконувати законні вимоги уповноважених осіб; не використовувати чити та сторонні переваги; не використовувати баги для отримання переваги; не перешкоджати нормальному ігровому процесу.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 8</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Забороняється використовувати службове становище або адміністративні повноваження в особистих цілях.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ IV. Адміністрація</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 9</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Адміністрація має право: контролювати дотримання правил; попереджати та карати порушників; розглядати скарги; тимчасово обмежувати доступ до сервера; скасовувати рішення, що суперечать Конституції.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 10</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Адміністрація зобов'язана діяти справедливо та не використовувати свої повноваження безпідставно.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ V. Фракції та державні органи</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 11</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Державні та інші фракції діють відповідно до Конституції, правил сервера та своїх нормативних документів.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 12</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Керівники фракцій відповідають за порядок у своїх підрозділах.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 13</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Жодна фракція не може мати повноважень, які суперечать Конституції.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ VI. Правосуддя</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 14</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Кожен гравець має право оскаржити покарання, якщо вважає його несправедливим.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 15</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Судові органи сервера повинні розглядати справи неупереджено та на основі доказів.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 16</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Забороняється карати гравця без встановленої підстави або доказів, якщо інше не передбачено правилами сервера.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ VII. Ліцензії</div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 17</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>На сервері діє система ліцензій, які підтверджують право гравця здійснювати певну діяльність.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 18</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Для роботи таксистом необхідно мати чинну ліцензію таксиста.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 19</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Для законного володіння та використання цивільної зброї необхідна відповідна ліцензія.</p></div>
+          </div>
+          <div class="card constit-card">
+            <div class="card-head"><h4>Стаття 20</h4><div class="chev">▸</div></div>
+            <div class="card-body"><p>Ліцензія може бути призупинена або анульована у разі порушення правил сервера.</p></div>
+          </div>
+
+          <div class="constitution-section-title">Розділ VIII. Приватна власність</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 21</h4><div class="chev">▸</div></div><div class="card-body"><p>Кожен гравець має право володіти законно придбаним майном.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 22</h4><div class="chev">▸</div></div><div class="card-body"><p>Гравці можуть купувати будинки, квартири, офіси, магазини, підприємства та інше дозволене майно.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 23</h4><div class="chev">▸</div></div><div class="card-body"><p>Гравець має право придбати будинок або квартиру, якщо об'єкт доступний для продажу.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 24</h4><div class="chev">▸</div></div><div class="card-body"><p>Житло може бути взяте в оренду на визначений строк.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 25</h4><div class="chev">▸</div></div><div class="card-body"><p>Власник має право користуватися майном, продавати його або передавати іншій особі відповідно до правил сервера.</p></div></div>
+
+          <div class="constitution-section-title">Розділ IX. Офіси</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 26</h4><div class="chev">▸</div></div><div class="card-body"><p>Гравець або юридична особа має право придбати доступний офіс.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 27</h4><div class="chev">▸</div></div><div class="card-body"><p>Офіс може бути взятий в оренду на визначений строк.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 28</h4><div class="chev">▸</div></div><div class="card-body"><p>Власник офісу має право використовувати його для законної діяльності.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 29</h4><div class="chev">▸</div></div><div class="card-body"><p>Орендар зобов'язаний своєчасно сплачувати орендну плату та виконувати умови договору.</p></div></div>
+
+          <div class="constitution-section-title">Розділ X. Захист власності</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 30</h4><div class="chev">▸</div></div><div class="card-body"><p>Ніхто не має права незаконно заволодіти, пошкодити або привласнити чуже майно.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 31</h4><div class="chev">▸</div></div><div class="card-body"><p>Власник має право звернутися до поліції або суду сервера у разі порушення його права власності.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 32</h4><div class="chev">▸</div></div><div class="card-body"><p>Позбавлення права власності допускається лише відповідно до Конституції, правил сервера або рішення уповноваженого органу.</p></div></div>
+
+          <div class="constitution-section-title">Розділ XI. Транспорт</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 33</h4><div class="chev">▸</div></div><div class="card-body"><p>Гравці мають право купувати, продавати та орендувати дозволений транспорт.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 34</h4><div class="chev">▸</div></div><div class="card-body"><p>Керування транспортом здійснюється відповідно до правил дорожнього руху сервера.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 35</h4><div class="chev">▸</div></div><div class="card-body"><p>Для окремих видів транспортної діяльності можуть встановлюватися спеціальні ліцензії або дозволи.</p></div></div>
+
+          <div class="constitution-section-title">Розділ XII. Надзвичайні ситуації</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 36</h4><div class="chev">▸</div></div><div class="card-body"><p>У разі масових порушень, технічних проблем або інших надзвичайних ситуацій адміністрація може тимчасово вводити спеціальні заходи для збереження порядку.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 37</h4><div class="chev">▸</div></div><div class="card-body"><p>Надзвичайні заходи повинні бути пропорційними ситуації та припинятися після усунення причини їх введення.</p></div></div>
+
+          <div class="constitution-section-title">Розділ XIII. Зміни до Конституції</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 38</h4><div class="chev">▸</div></div><div class="card-body"><p>Зміни до Конституції можуть вноситися адміністрацією сервера.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 39</h4><div class="chev">▸</div></div><div class="card-body"><p>Нові положення не повинні суперечити основним принципам справедливості, безпеки та рівності гравців.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 40</h4><div class="chev">▸</div></div><div class="card-body"><p>У разі внесення змін оновлена редакція Конституції публікується для ознайомлення всіх гравців.</p></div></div>
+
+          <div class="constitution-section-title">Розділ XIV. Заключні положення</div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 41</h4><div class="chev">▸</div></div><div class="card-body"><p>Конституція набирає чинності з моменту її офіційного опублікування адміністрацією.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 42</h4><div class="chev">▸</div></div><div class="card-body"><p>Усі гравці, адміністрація та фракції зобов'язані дотримуватися цієї Конституції.</p></div></div>
+          <div class="card constit-card"><div class="card-head"><h4>Стаття 43</h4><div class="chev">▸</div></div><div class="card-body"><p>Конституція є основою правового порядку сервера.</p></div></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">© Kharkiv RP — Всі права захищені — <a href="/admin.html" data-i18n="admin" style="color:var(--muted);text-decoration:underline">Адмін</a></div>
+    </footer>
+
+    <script>
+    const RULES = [
+      {
+        id: '1',
+        title: 'Пункт 1. Булінг, травля та Voice Chat',
+        items: [
+          { id: '1.1', text: "1.1 Забороняється булінг, систематична травля, переслідування інших гравців як в текстовому, так і в голосовому чаті." },
+          { id: '1.2', text: "1.2 Заборонено дискримінацію за мовними або культурними ознаками, за винятком випадку виступів українських артистів, які виконують матеріал російською — такі виступи не вважаються порушенням само по собі." },
+          { id: '1.3', text: "1.3 До персоналу та контрольних структур належать: адміністрація, власник, суддів, СБС, ДБР." }
+        ]
+      },
+      {
+        id: '2',
+        title: 'Пункт 2. Чіти та баги',
+        items: [
+          { id: '2.1', text: "2.1 Заборонені будь-які чіти, експлойти або використання сторонніх програм для отримання переваги." },
+          { id: '2.2', text: "2.2 Використання баґів гри для отримання неправомірної вигоди має бути негайно повідомлене адміністрації; навмисне зловживання карається суворо." }
+        ]
+      },
+      {
+        id: '3',
+        title: 'Пункт 3. Правила дорожнього руху',
+        items: [
+          { id: '3.1', text: "3.1 Дотримуйтесь правил дорожнього руху сервера — аварійні ситуації слід обробляти відповідно до інструкцій поліції та служби порятунку." },
+          { id: '3.2', text: "3.2 Небезпека для інших гравців через ігрову їзду (руйнівна поведінка) карається штрафами та/або конфіскацією транспортного засобу." }
+        ]
+      },
+      {
+        id: '4',
+        title: 'Пункт 4. Майно',
+        items: [
+          { id: '4.1', text: "4.1 Крадіжка, шахрайство або незаконне привласнення майна інших гравців заборонені." },
+          { id: '4.2', text: "4.2 Накладення шкоди майну, що належить адміністрації або іншим гравцям, може призвести до відшкодування або покарання." },
+          { id: '4.3', text: "4.3 Приватна власність має поважатися — проникнення без дозволу карається згідно з внутрішніми правилами." }
+        ]
+      },
+      {
+        id: '5',
+        title: 'Пункт 5. Кримінальні правила',
+        items: [
+          { id: '5.1', text: "5.1 Насильство або розбій у грі — штраф: 50 € або бан залежно від тяжкості." },
+          { id: '5.2', text: "5.2 Організована злочинна діяльність — штраф: 200 € та можливий довготривалий бан." },
+          { id: '5.3', text: "5.3 Вбивство без об'єктивної ролі (мають бути дотримані RP-процедури) — штраф: 100 € та/або тюремне ув'язнення в межах гри." },
+          { id: '5.4', text: "5.4 Незаконне володіння зброєю або вибухівкою — штраф: 150 € та конфіскація майна." },
+          { id: '5.5', text: "5.5 Торгівля забороненими матеріалами чи відмивання коштів — штраф: 300 € та суворі дисциплінарні заходи." }
+        ]
+      },
+      {
+        id: '6',
+        title: 'Пункт 6. Загальні положення',
+        items: [
+          { id: '6.1', text: "6.1 Гравці зобов'язані дотримуватись загальних правил ввічливості та порядку на сервері." },
+          { id: '6.2', text: "6.2 Адміністрація має право застосовувати санкції згідно з внутрішніми регламентами." },
+          { id: '6.3', text: "6.3 Апеляції розглядаються у встановленому порядку; рішення адміністрації є остаточними, якщо не вказано інше." },
+          { id: '6.4', text: "6.4 Порушення правил можуть мати як ігрові, так і позаігрові наслідки; уточнення надає адміністрація." },
+          { id: '6.5', text: "6.5 Усі питання, що не врегульовані цими правилами, вирішуються згідно з Конституцією сервера." }
+        ]
+      }
+    ];
+
+    function renderRulesInline(rules){
+      const container = document.getElementById('rulesList');
+      container.innerHTML = '';
+      rules.forEach(rule => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-head">
+            <h4>${rule.title}</h4>
+            <div class="chev">▸</div>
+          </div>
+          <div class="card-body">
+            ${rule.items.map(i=>`<div class="item"><strong>${i.id}</strong> — ${i.text}</div>`).join('')}
+          </div>
+        `;
+        card.querySelector('.card-head').addEventListener('click', () => { card.classList.toggle('open'); });
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRulesInline(RULES);
+
+      const search = document.getElementById('rulesSearch');
+      search.addEventListener('input', (e)=>{
+        const q = e.target.value.trim().toLowerCase();
+        if(!q){ renderRulesInline(RULES); return; }
+        const filtered = RULES.map(r=>({ ...r, items: r.items.filter(i=> (i.id + ' ' + i.text).toLowerCase().includes(q)) })).filter(r=>r.items.length>0);
+        renderRulesInline(filtered);
+        document.querySelectorAll('.card').forEach(c=>c.classList.add('open'));
+      });
+
+      // Initialize constitution accordion (pre-rendered)
+      function initConstitutionAccordion(){
+        document.querySelectorAll('.constit-card .card-head').forEach(head=>{
+          const card = head.closest('.constit-card');
+          head.addEventListener('click', ()=>{
+            document.querySelectorAll('.constit-card.open').forEach(c=>{ if(c!==card) c.classList.remove('open'); });
+            card.classList.toggle('open');
+          });
+        });
+      }
+      initConstitutionAccordion();
+
+      // Ensure join buttons open Roblox share URL
+      const ROBLOX_SHARE = 'https://roblox.com/share?code=5ihdm3h6w8n7dq&v=v2';
+      [document.getElementById('joinBtn'), document.getElementById('heroJoin')].filter(Boolean).forEach(b=>{
+        if(b.tagName === 'A'){
+          b.setAttribute('href', ROBLOX_SHARE);
+          b.setAttribute('target','_blank');
+          b.setAttribute('rel','noopener noreferrer');
+        } else {
+          b.addEventListener('click', ()=> window.open(ROBLOX_SHARE,'_blank','noopener'));
+        }
+      });
+
+      // Ensure status is present and styled
+      const status = document.getElementById('status'); if(status){ status.textContent=window.i18n.t('online'); status.classList.add('status-online'); }
+    });
+    </script>
+  </body>
+</html>

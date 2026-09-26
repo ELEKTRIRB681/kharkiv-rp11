@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title data-i18n="licensesPageTitle">Kharkiv RP — Ліцензії</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='100%25' height='100%25' fill='transparent'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' font-size='48'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <link href="/style.css" rel="stylesheet">
+    <script src="/style.js"></script>
+    <script src="/i18n.js"></script>
+    <style>
+      .license-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px}
+      .license-card{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:12px;background:var(--panel);border:1px solid rgba(255,255,255,0.03)}
+      .license-card h3{margin:0;color:var(--steel)}
+      .license-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,0.05)}
+      .license-row:first-of-type{border-top:0}
+      .license-status{background:#7fe57f;color:#021;display:inline-block;padding:5px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+      .search-row{display:flex;gap:8px;align-items:center;max-width:640px}
+      .search-row input{flex:1;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#0f0f0f;color:var(--muted)}
+      @media (max-width:700px){.search-row{flex-direction:column;align-items:stretch}.search-row .btn{width:100%}}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">Kharkiv RP</div>
+        <nav class="nav"><a href="/" data-i18n="home">Головна</a><a href="/ranks.html" data-i18n="ranks">Звання</a><a href="/licenses.html" data-i18n="licenses">Ліцензії</a><a href="/admin.html" data-i18n="admin">Адмін</a></nav>
+        <div class="cta"><button class="btn" type="button" data-lang-toggle>UA / RU</button><a class="btn primary" data-i18n="join" href="https://roblox.com/share?code=5ihdm3h6w8n7dq&v=v2" target="_blank" rel="noopener">Почати гру</a></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container" style="padding:40px 24px">
+        <h2 data-i18n="licensesTitle">Ліцензії</h2>
+        <p class="subtitle" data-i18n="licensesHint">Перелік чинних ліцензій, підтверджених адміністрацією.</p>
+        <div class="search-row">
+          <input id="licenseSearch" data-i18n-placeholder="searchNickname" placeholder="Пошук за нікнеймом">
+          <button id="checkLicense" class="btn" type="button" data-i18n="check">Перевірити</button>
+        </div>
+        <div id="licenseResult" style="margin-top:18px"></div>
+        <div id="licenseTypes" class="license-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner">© Kharkiv RP — Всі права захищені</div></footer>
+
+    <script>
+    const LICENSE_FACTION = 'Ліцензія на зброю';
+    let licenses = [];
+
+    function escapeHtml(value){
+      return (value || '').toString().replace(/[&<>"']/g, character=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[character]);
+    }
+
+    function formatDate(value){
+      const parts = String(value || '').split('-');
+      return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : escapeHtml(value);
+    }
+
+    function renderLicenseTypes(){
+      const query = document.getElementById('licenseSearch').value.trim().toLowerCase();
+      const activeLicenses = licenses.filter(record=>record.verified);
+      const filtered = query ? activeLicenses.filter(record=>String(record.nickname || '').toLowerCase() === query) : activeLicenses;
+      const weaponRows = filtered.map(record=>`<div class="license-row"><div><strong>${escapeHtml(record.nickname)}</strong><div style="color:var(--steel)">${window.i18n.t('validUntil')} ${formatDate(record.expires_on)}</div></div><span class="license-status">${window.i18n.t('valid')}</span></div>`).join('') || `<div style="color:var(--steel)">${window.i18n.t('noLicenses')}</div>`;
+      document.getElementById('licenseTypes').innerHTML = `<article class="license-card"><h3>${window.i18n.t('weaponLicense')}</h3>${weaponRows}</article>`;
+    }
+
+    function renderLicenseResult(){
+      const query = document.getElementById('licenseSearch').value.trim().toLowerCase();
+      const matches = licenses.filter(record=>String(record.nickname || '').toLowerCase() === query);
+      document.getElementById('licenseResult').innerHTML = query && matches.length === 0 ? `<div class="license-card">${window.i18n.t('notFound')}</div>` : matches.map(record=>`<div class="license-card"><h3>${escapeHtml(record.nickname)}</h3><div>${window.i18n.t('weaponLicense')}</div><div style="color:var(--steel)">${window.i18n.t('validUntil')} ${formatDate(record.expires_on)}</div><span class="license-status">${record.verified ? window.i18n.t('valid') : window.i18n.t('unverified')}</span></div>`).join('');
+    }
+
+    async function loadLicenses(){
+      const response = await fetch(window.location.origin + '/api/ranks');
+      if(!response.ok) throw new Error('Network');
+      const records = await response.json();
+      // Keep all non-expired licenses available for exact lookup; only verified ones are active in the public list.
+      licenses = records.filter(record=>record.faction === LICENSE_FACTION && record.expires_on);
+      renderLicenseTypes();
+    }
+
+    document.getElementById('checkLicense').addEventListener('click', renderLicenseResult);
+    document.getElementById('licenseSearch').addEventListener('keydown', event=>{ if(event.key === 'Enter') renderLicenseResult(); });
+
+    try{
+      const events = new EventSource(window.location.origin + '/api/stream');
+      events.addEventListener('update', ()=>loadLicenses().catch(()=>{}));
+    }catch(error){ }
+
+    loadLicenses().catch(()=>{
+      document.getElementById('licenseTypes').innerHTML = `<div class="license-card">${window.i18n.t('licenseLoadError')}</div>`;
+    });
+    window.addEventListener('languagechange', ()=>{ renderLicenseTypes(); renderLicenseResult(); });
+    </script>
+  </body>
+</html>

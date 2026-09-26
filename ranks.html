@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title data-i18n="ranksPageTitle">Kharkiv RP — Перевірка звання</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='100%25' height='100%25' fill='transparent'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='48'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <link href="/style.css" rel="stylesheet">
+    <script src="/style.js"></script>
+    <script src="/i18n.js"></script>
+    <style>
+      .card-verif{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:12px;background:var(--panel);border:1px solid rgba(255,255,255,0.03);max-width:520px}
+      .verif-badge{background:#7fe57f;color:#021;display:inline-block;padding:6px 10px;border-radius:999px;font-weight:600}
+      .search-row{display:flex;gap:8px;align-items:center}
+      #result{margin-top:18px}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">Kharkiv RP</div>
+        <nav class="nav"><a href="/" data-i18n="home">Головна</a><a href="/ranks.html" data-i18n="ranks">Звання</a><a href="/licenses.html" data-i18n="licenses">Ліцензії</a><a href="/admin.html" data-i18n="admin">Адмін</a></nav>
+        <div class="cta"><button class="btn" type="button" data-lang-toggle>UA / RU</button><a class="btn primary" data-i18n="join" href="https://roblox.com/share?code=5ihdm3h6w8n7dq&v=v2" target="_blank" rel="noopener">Почати гру</a></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container" style="padding:24px">
+        <h2 data-i18n="ranksTitle">Звання — Перевірка та список</h2>
+        <div style="display:flex;gap:18px;align-items:flex-start">
+          <div style="flex:1;min-width:320px">
+            <p class="subtitle" data-i18n="ranksHint">Введіть нікнейм гравця, щоб переглянути його звання.</p>
+            <div class="search-row">
+              <input id="nick" data-i18n-placeholder="playerNickname" placeholder="Нікнейм гравця" style="padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#0f0f0f;color:var(--muted);flex:1">
+              <button id="check" class="btn" data-i18n="check">Перевірити</button>
+            </div>
+            <div id="result" style="margin-top:18px"></div>
+          </div>
+
+          <div style="width:420px;max-width:40%">
+            <h3 style="margin-top:0" data-i18n="verifiedList">Список підтверджених (за фракціями)</h3>
+            <div id="overview" style="display:flex;flex-direction:column;gap:12px"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner">© Kharkiv RP — Всі права захищені</div></footer>
+
+    <script>
+    const OFFICIAL_FACTIONS = ['ДБР','СБС','Суд','Прокуратура'];
+
+    async function fetchRanks(nick){
+      const API_BASE = window.location.origin + '/api';
+      const url = nick ? `${API_BASE}/ranks?nick=${encodeURIComponent(nick)}` : `${API_BASE}/ranks`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Network');
+      const records = await res.json();
+      return records.filter(record=>OFFICIAL_FACTIONS.includes(record.faction));
+    }
+
+    function renderCard(data){
+      if(!data || data.length===0) return `<div class="card-verif">${window.i18n.t('notFound')}</div>`;
+      const r = data[0];
+      return `
+        <div class="card-verif">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong style="font-size:18px">${escapeHtml(r.nickname)}</strong><div style="color:var(--steel)">${escapeHtml(r.faction)}</div></div>
+            <div>${r.verified?`<span class="verif-badge">${window.i18n.t('verifiedStatus')}</span>`:''}</div>
+          </div>
+          <div style="margin-top:8px;color:var(--muted)">${window.i18n.t('rank')}: <strong style="color:#fff">${escapeHtml(r.rank)}</strong></div>
+        </div>`;
+    }
+
+    // Render overview grouped by factions
+    function renderOverview(list){
+      const factions = ['ДБР','СБС','Суд','Прокуратура'];
+      const groups = {};
+      factions.forEach(f=> groups[f]=[]);
+      (list||[]).forEach(r=>{
+        if(!r.faction) return;
+        if(!groups[r.faction]) groups[r.faction]=[];
+        if(r.verified && factions.includes(r.faction)) groups[r.faction].push(r);
+      });
+      const parts = factions.map(f=>{
+        const items = groups[f] || [];
+        const rows = items.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)"><div><strong>${escapeHtml(i.nickname)}</strong><div style="color:var(--steel)">${escapeHtml(i.rank)}</div></div><div class="verif-badge">${window.i18n.t('verifiedStatus')}</div></div>`).join('') || `<div style="color:var(--steel)">${window.i18n.t('noVerified')}</div>`;
+        return `<div style="border-left:3px solid rgba(255,255,255,0.02);padding-left:10px"><strong style="display:block;margin-bottom:6px">${f}</strong>${rows}</div>`;
+      });
+      document.getElementById('overview').innerHTML = parts.join('');
+    }
+
+    function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+    document.getElementById('check').addEventListener('click', async ()=>{
+      const nick = document.getElementById('nick').value.trim();
+      const out = document.getElementById('result');
+      window.__lastCheckedNick = nick;
+      out.innerHTML = `<div class="card-verif">${window.i18n.t('loading')}</div>`;
+      try{
+        const data = await fetchRanks(nick);
+        out.innerHTML = renderCard(data);
+      }catch(e){ out.innerHTML = `<div class="card-verif">${window.i18n.t('loadError')}</div>`; }
+    });
+
+    // Listen for server-sent events to auto-refresh the current result
+    try{
+      const es = new EventSource(window.location.origin + '/api/stream');
+      es.addEventListener('update', async (ev)=>{
+        // refresh both current lookup and overview
+        const nick = window.__lastCheckedNick;
+        try{
+          const all = await fetchRanks();
+          renderOverview(all);
+          if(nick){ const data = await fetchRanks(nick); document.getElementById('result').innerHTML = renderCard(data); }
+        }catch(e){ /* ignore */ }
+      });
+    }catch(e){ /* EventSource not available */ }
+
+    // initial load of overview
+    (async ()=>{ try{ const all = await fetchRanks(); renderOverview(all); }catch(e){} })();
+    </script>
+  </body>
+</html>
